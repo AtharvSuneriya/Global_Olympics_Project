@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<workbook version='18.1' xmlns:user='http://www.tableausoftware.com/xml/user'>
+  <preferences>
+    <preference name='ui.encoding.shelf.height' value='24' />
+    <preference name='ui.shelves.always_show_labels' value='true' />
+  </preferences>
+  <datasources>
+    <datasource caption='Medal Results &amp; Performance' inline='true' name='federated.medal_results' version='18.1'>
+      <connection class='federated'>
+        <named-connections>
+          <named-connection caption='medal_results' name='textscan.medal_results'>
+            <connection class='textscan' directory='.' filename='medal_results.csv' password='' />
+          </named-connection>
+        </named-connections>
+      </connection>
+      <column datatype='integer' name='year' role='dimension' type='ordinal' />
+      <column datatype='string' name='country' role='dimension' type='nominal' />
+      <column datatype='string' name='region' role='dimension' type='nominal' />
+      <column datatype='string' name='sports_investment' role='dimension' type='nominal' />
+      <column datatype='integer' name='total_medals' role='measure' type='quantitative' />
+      <column datatype='real' name='medal_efficiency_pct' role='measure' type='quantitative' />
+      <column datatype='integer' name='host_nation' role='dimension' type='ordinal' />
+      <column-instance column='total_medals' derivation='Sum' name='[sum:total_medals:ok]' pivot='key' type='quantitative' />
+    </datasource>
+    <datasource caption='Athletes Data' inline='true' name='federated.athletes' version='18.1'>
+      <connection class='federated'>
+        <named-connections>
+          <named-connection caption='athletes' name='textscan.athletes'>
+            <connection class='textscan' directory='.' filename='athletes.csv' password='' />
+          </named-connection>
+        </named-connections>
+      </connection>
+      <column datatype='string' name='sport_category' role='dimension' type='nominal' />
+      <column datatype='string' name='sport' role='dimension' type='nominal' />
+      <column datatype='integer' name='total_medals' role='measure' type='quantitative' />
+      <column datatype='integer' name='athlete_id' role='dimension' type='nominal' />
+    </datasource>
+    <datasource caption='Games Summary Data' inline='true' name='federated.games_summary' version='18.1'>
+      <connection class='federated'>
+        <named-connections>
+          <named-connection caption='games_summary' name='textscan.games_summary'>
+            <connection class='textscan' directory='.' filename='games_summary.csv' password='' />
+          </named-connection>
+        </named-connections>
+      </connection>
+      <column datatype='integer' name='year' role='dimension' type='ordinal' />
+      <column datatype='integer' name='total_medals_awarded' role='measure' type='quantitative' />
+    </datasource>
+    <datasource caption='All-Time Country Rankings' inline='true' name='federated.alltime_country_rankings' version='18.1'>
+      <connection class='federated'>
+        <named-connections>
+          <named-connection caption='alltime_country_rankings' name='textscan.alltime_country_rankings'>
+            <connection class='textscan' directory='.' filename='alltime_country_rankings.csv' password='' />
+          </named-connection>
+        </named-connections>
+      </connection>
+      <column datatype='string' name='country' role='dimension' type='nominal' />
+      <column datatype='integer' name='total_medals' role='measure' type='quantitative' />
+      <column datatype='integer' name='overall_rank' role='measure' type='quantitative' />
+    </datasource>
+  </datasources>
+
+  <worksheets>
+    <!-- Viz 1: Avg Medals per Athlete by Sport Category -->
+    <worksheet name='Viz1_Avg_Medals_per_Athlete_by_Sport_Category'>
+      <table>
+        <view>
+          <datasources>
+            <datasource name='federated.athletes' />
+          </datasources>
+          <datasource-dependencies datasource='federated.athletes'>
+            <column datatype='string' name='sport_category' role='dimension' type='nominal' />
+            <column datatype='integer' name='total_medals' role='measure' type='quantitative' />
+            <column-instance column='total_medals' derivation='Avg' name='[avg:total_medals:qk]' pivot='key' type='quantitative' />
+          </datasource-dependencies>
+          <aggregation value='true' />
+        </view>
+        <style />
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'>
+            <view>
+              <zero-line-visualization value='true' />
+            </view>
+            <mark class='Automatic' />
+            <encodings>
+              <color column='[federated.athletes].[avg:total_medals:qk]' />
+            </encodings>
+          </pane>
+        </panes>
+        <rows>[federated.athletes].[sport_category]</rows>
+        <cols>[federated.athletes].[avg:total_medals:qk]</cols>
+      </table>
+    </worksheet>
+
+    <!-- Viz 2: Global Performance Metrics by Country -->
+    <worksheet name='Viz2_Global_Performance_Metrics_by_Country'>
+      <table>
+        <view>
+          <datasources>
+            <datasource name='federated.alltime_country_rankings' />
+          </datasources>
+          <datasource-dependencies datasource='federated.alltime_country_rankings'>
+            <column datatype='string' name='country' role='dimension' type='nominal' />
+            <column datatype='integer' name='total_medals' role='measure' type='quantitative' />
+            <column-instance column='total_medals' derivation='Sum' name='[sum:total_medals:qk]' pivot='key' type='quantitative' />
+          </datasource-dependencies>
+          <aggregation value='true' />
+        </view
