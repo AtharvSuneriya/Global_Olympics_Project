@@ -95,7 +95,7 @@ Presentation Video: https://drive.google.com/file/d/1UOyqxh-Qce4ySmBFPmgzE18HQYZ
 
 🌐 Tableau Public Dashboard
 
-Tableau Public Link: 
+Tableau Public Link: https://public.tableau.com/views/Project_17935478719450/Dashboard1?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link
 
 📚 Project Documentation
 
